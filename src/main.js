@@ -1,31 +1,31 @@
 import * as THREE from "three";
-import Ribbon from "./Ribbon3";
+import Ribbon from "./Ribbon";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
-// async function loadTextures(imagArray) {
-//     let textureLoader = new THREE.TextureLoader();
-//     const promise = imagArray.map((texture) => {
-//         return new Promise((resolve, reject) => {
-//             textureLoader.load(texture.path, resolve, undefined, reject);
-//         });
-//     });
+async function loadTextures(imagArray) {
+    let textureLoader = new THREE.TextureLoader();
+    const promise = imagArray.map((texture) => {
+        return new Promise((resolve, reject) => {
+            textureLoader.load(texture.path, resolve, undefined, reject);
+        });
+    });
 
-//     return Promise.all(promise);
-// }
-
-async function gLTFLoader(gltfArr){
-    let loader = new GLTFLoader()
-    const promise = gltfArr.map((gltf)=>{
-        return new Promise((reslove,reject)=>{
-            loader.load(gltf.path,reslove,undefined,reject)
-        })
-    })
-
-    return await Promise.all(promise)
-
+    return Promise.all(promise);
 }
+
+// async function gLTFLoader(gltfArr){
+//     let loader = new GLTFLoader()
+//     const promise = gltfArr.map((gltf)=>{
+//         return new Promise((reslove,reject)=>{
+//             loader.load(gltf.path,reslove,undefined,reject)
+//         })
+//     })
+
+//     return await Promise.all(promise)
+
+// }
 
 function initScene(texture) {
 
@@ -50,7 +50,7 @@ function initScene(texture) {
     let height = window.innerHeight;
 
     //Camera
-    const frustumSize = 10000;
+    const frustumSize = 100;
     const aspect = width / height;
     const camera = new THREE.OrthographicCamera(
         (frustumSize * aspect) / -2,
@@ -101,10 +101,10 @@ function initScene(texture) {
         const delta = clock.getDelta();
         time += delta;
 
-        // ribbon.animateRibbons();
+        ribbon.animateRibbons(time);
         ribbon.animateConfetti(time)
 
-        ribbon.updateMixer(delta)
+        // ribbon.updateMixer(delta)
 
         updateOverlay();
         renderer.render(scene, camera);
@@ -125,33 +125,39 @@ function initScene(texture) {
             camera.top = frustumSize / 2;
             camera.bottom = frustumSize / -2;
             camera.updateProjectionMatrix();
-            renderer.setSize(width, height);
-
-            
-            
-            const newFrustumSize = frustumSize; // Implement your logic
-            ribbon.updateFrustumSize(newFrustumSize);
+            renderer.setSize(width, height);  
         },
         false
     );
 }
 
-// const ribbonArray = [
-//     {
-//         name: "ribbon",
-//         path: "Images/Ri_C1.png",
-//     },
-// ];
-const gltfArr = [
+const ribbonArray = [
     {
         name: "ribbon",
-        path: "Models/Ribbon.gltf",
+        path: "Images/Ri_C1.png",
     },
 ];
 
-gLTFLoader(gltfArr)
-    .then((t) => {
-        console.log("gltf loaded---------------", t);
-        initScene(t);
-    })
-    .catch((e) => console.log("Error in loading Textures:-", e));
+loadTextures(ribbonArray)
+.then((t) => {
+  // Initialize the scene after textures loaded
+  console.log(t)
+  initScene(t)
+})
+.catch((e) => console.log(e));
+
+//Models array
+// const gltfArr = [
+//     {
+//         name: "ribbon",
+//         path: "Models/Ribbon.gltf",
+//     },
+// ];
+
+//Loading 3d models
+// gLTFLoader(gltfArr)
+//     .then((t) => {
+//         console.log("gltf loaded---------------", t);
+//         initScene(t);
+//     })
+//     .catch((e) => console.log("Error in loading Textures:-", e));

@@ -47,7 +47,7 @@ class Ribbon {
     // Position the model at the top of the screen
     model.position.set(0, this.frustumSize / 2, 0);
 
-    model.scale.set(100,100,100)
+    model.scale.set(200,200,200)
     // model.scale.set(this.frustumSize * 0.01,this.frustumSize * 0.01,this.frustumSize * 0.01)
 
     // Add the model to the scene

@@ -18,14 +18,16 @@ class Ribbon {
     this.ribbonSpeed = 0.0005;
     this.ribbonCount = 15;
 
+    this.time = 0 ;
+
     this.setupLighting();
 
     for (let i = 0; i < this.ribbonCount; i++) {
-      // this.ribbons.push(this.createRibbon());
+      this.ribbons.push(this.createRibbon());
     } // Add zigzag planes
 
     for (let i = 0; i < this.confettiCount; i++) {
-      this.confettiPapers.push(this.createConfetti())
+      // this.confettiPapers.push(this.createConfetti())
     }
   }
 
@@ -49,7 +51,6 @@ class Ribbon {
     });
 
     let points = this.generateCurvePoints();
-    console.log(points)
 
     const geometry = new THREE.BufferGeometry().setFromPoints(points);
     const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
@@ -69,17 +70,16 @@ class Ribbon {
       planeGeometry,
       planeMaterial
     );
-    flow.object3D.position.x =
-      (Math.random() - 0.5) * this.frustumSize * this.aspect;
+    flow.object3D.position.x = (Math.random() - 0.5) * this.frustumSize * this.aspect;
 
     // Set scale based on original frustum size
     flow.object3D.scale.set(this.frustumSize * 0.1, this.frustumSize * 0.1, this.frustumSize * 0.1);
     // console.log(flow.object3D.scale);
 
+    flow.updateCurve(0, zigzagCurve1);
     this.scene.add(flow.object3D);
 
-    flow.updateCurve(0, zigzagCurve1);
-    flow.setCurve(0, 0);
+    // flow.setCurve(0, 0);
     flow.moveIndividualAlongCurve(0, Math.random());
     flow.object3D.setColorAt(0, new THREE.Color(0xffffff * Math.random() * 2));
     flow.curveArray[0].needsUpdate = true;
@@ -95,17 +95,16 @@ class Ribbon {
     let waveFrequency = baseFrustumSize * 0.18;
 
     // Use original width/height to calculate start and end positions
-    const topScreen = this.width / 2; // Top of the screen
-    const bottomScreen = -this.width / 2; // Bottom of the screen
+    const topScreen = this.frustumSize  ; // Top of the screen
+    const bottomScreen = -this.frustumSize ; // Bottom of the screen
     const totalPoints = 25; // Number of points to generate
-
+    
     let yIncrement = (topScreen - bottomScreen) / (totalPoints - 1); // Equal space along y-axis
     // console.log(yIncrement,topScreen,bottomScreen)
     for (let i = 0; i < totalPoints; i++) {
       // Normalize xVariation with respect to original frustum size to avoid distortion
       // let xVariation =  Math.random() * this.aspect * this.frustumSize * 0.003;
-      let xVariation =
-        Math.sin((i / totalPoints) * waveFrequency) * waveAmplitude;
+      let xVariation = Math.sin((i / (totalPoints)) * waveFrequency) * waveAmplitude;
       let y = (topScreen - i * yIncrement) * 0.03;
       let z = 0;
 
@@ -118,29 +117,19 @@ class Ribbon {
 
     return points;
   }
-
-  
-  // Update ribbon curves when frustumSize changes
-  updateRibbonCurves() {
-    this.ribbons.forEach((flow) => {
-      // Generate new curve points based on the updated frustum size
-      let points = this.generateCurvePoints();
-      let newCurve = new THREE.CatmullRomCurve3(points);
-      newCurve.curveType = "centripetal";
-      newCurve.tension = 0.7;
-      newCurve.closed = true;
-      
-      // Update the flow's curve with the new points
-      flow.updateCurve(0, newCurve);
-      flow.curveArray[0].needsUpdate = true;
-    });
-  }
   
    // Existing animateRibbons method with added update check
    animateRibbons() {
     this.ribbons.forEach((flow) => {
       if (flow) {
         flow.moveAlongCurve(this.ribbonSpeed);
+
+        
+        if(this.time > 0) {
+          this.time += 0.01
+        }
+        const currentProgress = flow.curveArray[0].getPoint(this.time)
+        console.log(currentProgress)
 
         // Adjust scale if frustumSize has changed dynamically
         const newScaleFactor = this.originalFrustumSize / this.frustumSize;
@@ -153,13 +142,6 @@ class Ribbon {
     });
   }
 
-  // If frustumSize changes, update curve points and ribbons
-  updateFrustumSize(newFrustumSize) {
-    this.frustumSize = newFrustumSize;
-
-    // Recalculate and update the ribbon curves
-    this.updateRibbonCurves();
-  }
   
   getRandomColor() {
     const colors = [0xdf0049, 0x00e857, 0x2bebbc, 0xffd200];
@@ -211,8 +193,7 @@ class Ribbon {
       paper.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
       //Papers falling from top to bottom
-      paper.position.x +=
-        Math.sin(elapsedTime + index * 0.8) * 0.01 + paper.userData.xSpeed;
+      paper.position.x += Math.sin(elapsedTime + index * 0.8) * 0.01 + paper.userData.xSpeed;
       paper.position.y += paper.userData.ySpeed;
 
       //Adding wind Effect to the papers
