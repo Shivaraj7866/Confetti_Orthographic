@@ -1,8 +1,9 @@
 import * as THREE from "three";
-import Ribbon from "./Ribbon";
+import Ribbon from "./Ribbon"
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import Confetti from "./confetti";
 
 async function loadTextures(imagArray) {
     let textureLoader = new THREE.TextureLoader();
@@ -15,6 +16,9 @@ async function loadTextures(imagArray) {
     return Promise.all(promise);
 }
 
+/**
+ * Use this loader only while using models
+ */
 // async function gLTFLoader(gltfArr){
 //     let loader = new GLTFLoader()
 //     const promise = gltfArr.map((gltf)=>{
@@ -50,7 +54,7 @@ function initScene(texture) {
     let height = window.innerHeight;
 
     //Camera
-    const frustumSize = 100;
+    const frustumSize = 10;
     const aspect = width / height;
     const camera = new THREE.OrthographicCamera(
         (frustumSize * aspect) / -2,
@@ -66,6 +70,10 @@ function initScene(texture) {
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     document.body.appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+    const dLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    scene.add(dLight, ambientLight);
 
     let controls = new OrbitControls(camera,renderer.domElement)
     controls.enableDamping = true ;
@@ -91,6 +99,13 @@ function initScene(texture) {
         height,
         texture[0]
     );
+    let confetti = new Confetti(
+        scene,
+        frustumSize,
+        width,
+        height,
+        texture[0]
+    );
 
     function animate() {
         stats.begin()
@@ -102,7 +117,7 @@ function initScene(texture) {
         time += delta;
 
         ribbon.animateRibbons(time);
-        ribbon.animateConfetti(time)
+        confetti.animateConfetti(time)
 
         // ribbon.updateMixer(delta)
 
