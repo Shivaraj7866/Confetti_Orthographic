@@ -17,9 +17,7 @@ class Ribbon {
     this.ribbonCount = 1;
     this.time = 0;
 
-  
-
-    this.createRibbon(); // Create the ribbon(s)
+    //this.createRibbon(); // Create the ribbon(s)
 
   }
   
@@ -50,8 +48,6 @@ class Ribbon {
     let flow = new InstancedFlow(instanceCount, instanceCount, planeGeometry, planeMaterial);
     flow.object3D.scale.set(this.frustumSize * 0.1, this.frustumSize * 0.1, this.frustumSize * 0.1);
 
-    
-    
     // Update the curve for each instance and move it along the curve
     for (let i = 0; i < instanceCount; i++) {
       flow.object3D.position.x = 0
@@ -60,8 +56,6 @@ class Ribbon {
       flow.moveIndividualAlongCurve(i, Math.random()); // Move each instance randomly along the curve
       flow.object3D.setColorAt( i, new THREE.Color( 0xffffff * Math.random() ) );
     }
-
-    // Add the flow object to the scene
   
     // Store the flow instance for animation later
     this.ribbons.push(flow);

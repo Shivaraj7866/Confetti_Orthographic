@@ -3,7 +3,7 @@ import Ribbon from "./Ribbon"
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
-import Confetti from "./confetti";
+import Confetti from "./Confetti";
 
 async function loadTextures(imagArray) {
     let textureLoader = new THREE.TextureLoader();
@@ -54,7 +54,7 @@ function initScene(texture) {
     let height = window.innerHeight;
 
     //Camera
-    const frustumSize = 10;
+    const frustumSize = 100;
     const aspect = width / height;
     const camera = new THREE.OrthographicCamera(
         (frustumSize * aspect) / -2,
