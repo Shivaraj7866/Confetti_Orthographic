@@ -43,7 +43,7 @@ function initScene(texture) {
     document.body.appendChild(overlay);
 
     let stats = new Stats();
-    stats.showPanel(0);
+    stats.showPanel(2);
     document.body.appendChild(stats.dom);
 
     //coding part starts----------------------------
@@ -54,7 +54,7 @@ function initScene(texture) {
     let height = window.innerHeight;
 
     //Camera
-    const frustumSize = 100;
+    const frustumSize = 10000;
     const aspect = width / height;
     const camera = new THREE.OrthographicCamera(
         (frustumSize * aspect) / -2,
