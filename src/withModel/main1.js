@@ -106,7 +106,7 @@ function initScene(texture) {
         frustumSize,
         width,
         height,
-        texture[1]
+        texture[2]
     );
 
     function animate() {
@@ -175,6 +175,10 @@ const gltfArr = [
     {
         name:"ribbon_idle",
         path : "Models/Ribbon_Idle.gltf"
+    },
+    {
+        name:"ribbon2",
+        path:"Models/Ribbon1.gltf"
     }
 ];
 

@@ -62,7 +62,7 @@ class Confetti {
         }
 
         const rippleRotation = this.getRippleRotation(elapsedTime, i, rotationSpeed);
-        matrix.compose(position, rippleRotation, new THREE.Vector3(this.frustumSize * 0.1, this.frustumSize * 0.1, this.frustumSize * 0.1));
+        matrix.compose(position, rippleRotation, new THREE.Vector3(this.frustumSize * 0.12, this.frustumSize * 0.12, this.frustumSize * 0.12));
 
         confetti.setMatrixAt(i, matrix);
         confetti.instanceMatrix.needsUpdate = true;

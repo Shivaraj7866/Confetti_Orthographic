@@ -41,13 +41,13 @@ class Ribbon1 {
       model.position.set(positionX, positionY, 0);
       model.scale.setScalar(this.frustumSize * 0.01);
       console.log(model.children[0].children[0].material.color)
-      model.children[0].children[0].material.color.r = Math.random()
-      model.children[0].children[0].material.color.g = Math.random()
-      model.children[0].children[0].material.color.b = Math.random()
+      // model.children[0].children[0].material.color.r = Math.random()
+      // model.children[0].children[0].material.color.g = Math.random()
+      // model.children[0].children[0].material.color.b = Math.random()
 
       model.children[0].children[1].material.color.copy(model.children[0].children[0].material.color)
       
-
+console.log(model)
       this.scene.add(model);
 
       if (this.model.animations?.length > 0) {
