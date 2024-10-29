@@ -53,7 +53,7 @@ function initScene(texture) {
     let height = window.innerHeight;
 
     //Camera
-    const frustumSize = 10000;
+    const frustumSize = 10;
     const aspect = width / height;
     const camera = new THREE.OrthographicCamera(
         (frustumSize * aspect) / -2,
@@ -106,7 +106,7 @@ function initScene(texture) {
         frustumSize,
         width,
         height,
-        texture[2]
+        texture[1]
     );
 
     function animate() {
@@ -148,23 +148,6 @@ function initScene(texture) {
     );
 }
 
-/**
- * 
- */
-// const ribbonArray = [
-//     {
-//         name: "ribbon",
-//         path: "Images/Ri_C1.png",
-//     },
-// ];
-
-// loadTextures(ribbonArray)
-// .then((t) => {
-//   // Initialize the scene after textures loaded
-//   console.log(t)
-//   initScene(t)
-// })
-// .catch((e) => console.log(e));
 
 //Models array
 const gltfArr = [
@@ -174,7 +157,7 @@ const gltfArr = [
     },
     {
         name:"ribbon_idle",
-        path : "Models/Ribbon_Idle.gltf"
+        path : "Models/Ribbon_Idle 1.gltf"
     },
     {
         name:"ribbon2",

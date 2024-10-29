@@ -1,8 +1,7 @@
 import * as THREE from "three";
-import Ribbon from "./Ribbon";
+import SingleFlow from "./flow";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import Confetti from "./Confetti";
 
 async function loadTextures(imagArray) {
   let textureLoader = new THREE.TextureLoader();
@@ -26,7 +25,7 @@ function initScene(texture) {
   document.body.appendChild(overlay);
 
   let stats = new Stats();
-  stats.showPanel(2);
+  stats.showPanel(0);
   document.body.appendChild(stats.dom);
 
   //coding part starts----------------------------
@@ -37,7 +36,7 @@ function initScene(texture) {
   let height = window.innerHeight;
 
   //Camera
-  const frustumSize = 1000;
+  const frustumSize = 100;
   const aspect = width / height;
   const camera = new THREE.OrthographicCamera(
     (frustumSize * aspect) / -2,
@@ -47,7 +46,7 @@ function initScene(texture) {
     -1000,
     1000
   );
-  camera.position.z = 15;
+  camera.position.z = 5;
 
   //Renderer
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -75,8 +74,7 @@ function initScene(texture) {
   let time = 0;
 
   //Ribbon class instance
-  let ribbon = new Ribbon(scene, frustumSize, width, height, texture[0]);
-  let confetti = new Confetti(scene, frustumSize, width, height, texture[0]);
+  let ribbon = new SingleFlow(scene, frustumSize, width, height, texture[0]);
 
   function animate() {
     stats.begin();
@@ -87,8 +85,7 @@ function initScene(texture) {
     const delta = clock.getDelta();
     time += delta;
 
-    ribbon.animateRibbons(time);
-    confetti.animateConfetti(time);
+    ribbon.animateRibbon(time);
 
     updateOverlay();
     renderer.render(scene, camera);
