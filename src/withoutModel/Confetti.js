@@ -77,6 +77,16 @@ class Confetti {
 
     return new THREE.Quaternion().setFromEuler(new THREE.Euler(rotationSpeed + rippleX * 300, rotationSpeed + rippleY * 300, rippleZ));
   }
+
+  dispose() {
+    this.confettiPapers.forEach((confetti) => {
+      this.scene.remove(confetti);
+      confetti.geometry.dispose();
+      confetti.material.dispose();
+
+    });
+    this.confettiPapers = [];
+  }
 }
 
 export default Confetti;

@@ -14,7 +14,7 @@ class Ribbon {
     this.flow = null;
 
     // Initialize ribbons
-    this.createRibbons();
+    this.ribbonArr = [this.createRibbons()];
   }
 
   getRandomColor() {
@@ -65,6 +65,8 @@ class Ribbon {
 
     this.flow.object3D.instanceMatrix.needsUpdate = true;
     this.scene.add(this.flow.object3D);
+
+    return this.flow;
   }
 
   generateStaticPoints() {
@@ -72,8 +74,8 @@ class Ribbon {
     const bottomScreen = -this.frustumSize / 2 - this.frustumSize * 0.2;
     const totalPoints = 20;
     const yIncrement = (topScreen - bottomScreen) / (totalPoints - 1);
-    const xOffsets = [-0.4, -0.2, -0.02, -0.1, 0.3, 0.4, 0.2].map(
-      (offset, i) => offset * this.frustumSize * this.aspect
+    const xOffsets = [-0.4, -0.3, -0.2, -0.02, -0.1, 0.3, 0.2, 0.05, 0.4].map(
+      (offset) => offset * this.frustumSize * this.aspect
     );
 
     const pointsArray = Array(xOffsets.length)
@@ -83,11 +85,12 @@ class Ribbon {
 
     for (let i = 0; i < totalPoints; i++) {
       const y = topScreen - i * yIncrement;
-      const z = i === 0 || i === totalPoints - 1
-        ? -this.frustumSize * 0.5
-        : Math.random() < 0.5
-          ? -1
-          : 1;
+      const z =
+        i === 0 || i === totalPoints - 1
+          ? -this.frustumSize * 0.5
+          : Math.random() < 0.5
+            ? -1
+            : 1;
 
       xOffsets.forEach((x, j) => {
         pointsArray[j].push(
@@ -102,37 +105,51 @@ class Ribbon {
     }
     const scaleFactor = this.frustumSize / this.originalFrustumSize;
 
-    pointsArray.map((points) => points.map((point, i) => {
+    pointsArray.map((points) =>
+      points.map((point, i) => {
+        if (i === 0) {
+          point.x =
+            this.frustumSize * this.aspect +
+            this.frustumSize * this.aspect * 0.0001;
+        } else if (i === points.length - 1) {
+          point.x =
+            this.frustumSize * this.aspect -
+            this.frustumSize * this.aspect * 0.0001;
+        }
 
-      if (i === 0) {
-        point.x = this.frustumSize * this.aspect + this.frustumSize * this.aspect * 0.0001
-      } else if (i === points.length - 1) {
-        point.x = this.frustumSize * this.aspect - this.frustumSize * this.aspect * 0.00001
-      }
-
-      point.multiplyScalar(scaleFactor)
-    }));
+        point.multiplyScalar(scaleFactor);
+      })
+    );
 
     return pointsArray;
   }
 
   animateRibbons() {
-    this.flow.moveAlongCurve(this.ribbonSpeed);
-    this.deltaTime += 0.001;
+    this.ribbonArr.forEach((flow) => {
+      if (flow) {
+        flow.moveAlongCurve(this.ribbonSpeed);
+      }
+    });
+  }
 
-    if (this.deltaTime > 1) this.deltaTime = 0;
+  dispose() {
+    this.ribbonArr.forEach((flow) => {
+      if (flow) {
+        // Remove ribbons from scene
+        this.scene.remove(flow.object3D);
 
-    // Hide ribbons that go out of bounds and reset them
-    // for (let i = 0; i < this.ribbonCount; i++) {
-    //   const curve = this.flow.curveArray[i % this.flow.curveArray.length];
-    //   if (curve.getPoint(this.deltaTime).y < -this.frustumSize / 2) {
-    //     this.flow.object3D.visible = false;
-    //   } else {
-    //     this.flow.object3D.visible = true;
-    //   }
-    // }
+        // Dispose geometry and material
+        flow.object3D.geometry.dispose();
+        flow.object3D.material.dispose();
 
-    this.flow.object3D.instanceMatrix.needsUpdate = true;
+        // Dispose texture if it exists
+        if (this.texture) this.texture.dispose();
+
+        // Nullify references for garbage collection
+        flow = null;
+        this.texture = null;
+      }
+    });
   }
 }
 

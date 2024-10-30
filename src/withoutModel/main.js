@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import Ribbon from "./Ribbon";
 import Stats from "three/examples/jsm/libs/stats.module.js";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Confetti from "./Confetti";
 
 async function loadTextures(imagArray) {
@@ -29,15 +29,13 @@ function initScene(texture) {
   stats.showPanel(2);
   document.body.appendChild(stats.dom);
 
-  //coding part starts----------------------------
-
-  //Scene
+  //Scene setup
   const scene = new THREE.Scene();
   let width = window.innerWidth;
   let height = window.innerHeight;
 
-  //Camera
-  const frustumSize = 1000;
+  //Camera setup
+  const frustumSize = 80;
   const aspect = width / height;
   const camera = new THREE.OrthographicCamera(
     (frustumSize * aspect) / -2,
@@ -49,7 +47,7 @@ function initScene(texture) {
   );
   camera.position.z = 15;
 
-  //Renderer
+  //Renderer setup
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(width, height);
   document.body.appendChild(renderer.domElement);
@@ -61,7 +59,7 @@ function initScene(texture) {
   let controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
 
-  //Overlay
+  //Overlay update
   function updateOverlay() {
     overlay.innerHTML = `
       <strong>Draw Calls:</strong> ${renderer.info.render.calls}<br>
@@ -73,17 +71,20 @@ function initScene(texture) {
 
   let clock = new THREE.Clock();
   let time = 0;
+  let animationId;
 
-  //Ribbon class instance
+  //Instances of Ribbon and Confetti
   let ribbon = new Ribbon(scene, frustumSize, width, height, texture[0]);
   let confetti = new Confetti(scene, frustumSize, width, height, texture[0]);
 
+  window.addEventListener("click",() => confetti.dispose())
+  window.addEventListener("click",() => ribbon.dispose())
+
   function animate() {
     stats.begin();
-
     requestAnimationFrame(animate);
-    controls.update();
 
+    controls.update();
     const delta = clock.getDelta();
     time += delta;
 
@@ -97,22 +98,21 @@ function initScene(texture) {
 
   animate();
 
-  // Handle window resize
-  window.addEventListener(
-    "resize",
-    () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      const aspect = width / height;
-      camera.left = (frustumSize * aspect) / -2;
-      camera.right = (frustumSize * aspect) / 2;
-      camera.top = frustumSize / 2;
-      camera.bottom = frustumSize / -2;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-    },
-    false
-  );
+  // Window resize handler
+  window.addEventListener("resize", onWindowResize, false);
+  
+  function onWindowResize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    const aspect = width / height;
+    camera.left = (frustumSize * aspect) / -2;
+    camera.right = (frustumSize * aspect) / 2;
+    camera.top = frustumSize / 2;
+    camera.bottom = frustumSize / -2;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
+
 }
 
 const ribbonArray = [
@@ -123,9 +123,5 @@ const ribbonArray = [
 ];
 
 loadTextures(ribbonArray)
-  .then((t) => {
-    // Initialize the scene after textures loaded
-    console.log(t);
-    initScene(t);
-  })
+  .then((t) => initScene(t))
   .catch((e) => console.log(e));
