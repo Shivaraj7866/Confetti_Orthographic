@@ -35,7 +35,7 @@ function initScene(texture) {
   let height = window.innerHeight;
 
   //Camera setup
-  const frustumSize = 80;
+  const frustumSize = 100;
   const aspect = width / height;
   const camera = new THREE.OrthographicCamera(
     (frustumSize * aspect) / -2,
@@ -45,7 +45,7 @@ function initScene(texture) {
     -1000,
     1000
   );
-  camera.position.z = 15;
+  camera.position.z = 5;
 
   //Renderer setup
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -77,8 +77,10 @@ function initScene(texture) {
   let ribbon = new Ribbon(scene, frustumSize, width, height, texture[0]);
   let confetti = new Confetti(scene, frustumSize, width, height, texture[0]);
 
-  window.addEventListener("click",() => confetti.dispose())
-  window.addEventListener("click",() => ribbon.dispose())
+  // window.addEventListener("click",() => {
+  //   confetti.dispose()
+  //   ribbon.dispose()
+  // })
 
   function animate() {
     stats.begin();

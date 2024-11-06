@@ -7,6 +7,7 @@ class Ribbon {
     this.texture = texture;
     this.aspect = width / height;
     this.frustumSize = frustumSize;
+
     this.originalFrustumSize = frustumSize;
     this.ribbonSpeed = 0.00025;
     this.ribbonCount = 55;
@@ -74,23 +75,29 @@ class Ribbon {
     const bottomScreen = -this.frustumSize / 2 - this.frustumSize * 0.2;
     const totalPoints = 20;
     const yIncrement = (topScreen - bottomScreen) / (totalPoints - 1);
-    const xOffsets = [-0.4, -0.3, -0.2, -0.02, -0.1, 0.3, 0.2, 0.05, 0.4].map(
+    const xOffsets = [-Math.random() * 0.5, -Math.random() * 0.5, -Math.random() * 0.5, -Math.random() * 0.5, -Math.random() * 0.5, Math.random() * 0.1,Math.random() * 0.5,Math.random() * 0.5,Math.random() * 0.5].map(
       (offset) => offset * this.frustumSize * this.aspect
     );
+    // const xOffsets = [-0.4, -0.35, -0.25, -0.02, -0.1, 0.3, 0.2, 0.05, 0.4].map(
+    //   (offset) => offset * this.frustumSize * this.aspect
+    // );
 
     const pointsArray = Array(xOffsets.length)
       .fill()
       .map(() => []);
-    let isPos = true;
 
+
+    const scaleFactor = this.frustumSize / this.originalFrustumSize;
+
+    let isPos = true;
     for (let i = 0; i < totalPoints; i++) {
-      const y = topScreen - i * yIncrement;
+      const y = topScreen - i * yIncrement * scaleFactor * 0.9;
       const z =
         i === 0 || i === totalPoints - 1
           ? -this.frustumSize * 0.5
           : Math.random() < 0.5
-            ? -1
-            : 1;
+            ? -this.frustumSize * 0.05
+            : this.frustumSize * 0.05
 
       xOffsets.forEach((x, j) => {
         pointsArray[j].push(
@@ -103,8 +110,8 @@ class Ribbon {
       });
       isPos = !isPos;
     }
-    const scaleFactor = this.frustumSize / this.originalFrustumSize;
 
+    //Update the xPos of all the ribbons and adjust them according to the frustumSize
     pointsArray.map((points) =>
       points.map((point, i) => {
         if (i === 0) {
@@ -124,6 +131,7 @@ class Ribbon {
     return pointsArray;
   }
 
+  //Make Ribbons animate through the path
   animateRibbons() {
     this.ribbonArr.forEach((flow) => {
       if (flow) {
