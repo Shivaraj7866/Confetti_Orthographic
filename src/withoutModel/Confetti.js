@@ -20,7 +20,7 @@ class Confetti {
       const rotation = new THREE.Euler(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
       const randomColor = new THREE.Color(this.getRandomColor());
 
-      confetti.setMatrixAt(i, new THREE.Matrix4().compose(position, new THREE.Quaternion().setFromEuler(rotation), new THREE.Vector3(1, 1, 1)));
+      confetti.setMatrixAt(i, new THREE.Matrix4().compose(position, new THREE.Quaternion(), new THREE.Vector3(1, 1, 1)));
       confetti.setColorAt(i, randomColor);
       confetti.userData[i] = this.getRandomSpeed();
     }

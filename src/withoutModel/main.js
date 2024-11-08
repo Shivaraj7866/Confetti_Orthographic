@@ -35,7 +35,7 @@ function initScene(texture) {
   let height = window.innerHeight;
 
   //Camera setup
-  const frustumSize = 100;
+  const frustumSize = 10;
   const aspect = width / height;
   const camera = new THREE.OrthographicCamera(
     (frustumSize * aspect) / -2,
@@ -101,7 +101,7 @@ function initScene(texture) {
   animate();
 
   // Window resize handler
-  window.addEventListener("resize", onWindowResize, false);
+  window.addEventListener("resize", onWindowResize, true);
   
   function onWindowResize() {
     width = window.innerWidth;
