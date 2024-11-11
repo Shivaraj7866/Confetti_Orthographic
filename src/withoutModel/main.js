@@ -71,7 +71,6 @@ function initScene(texture) {
 
   let clock = new THREE.Clock();
   let time = 0;
-  let animationId;
 
   //Instances of Ribbon and Confetti
   let ribbon = new Ribbon(scene, frustumSize, width, height, texture[0]);

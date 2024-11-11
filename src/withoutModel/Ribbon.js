@@ -13,12 +13,10 @@ class Ribbon {
     this.ribbonCount = 50;
     this.deltaTime = 0;
     this.progress = 0
-    // this.flow = null;
 
     // Initialize ribbons
     this.ribbonArr = [this.createRibbons()];
 
-    // console.log(this.createRibbons())
   }
 
   getRandomColor() {
@@ -64,7 +62,6 @@ class Ribbon {
         new THREE.Color(this.getRandomColor())
       );
 
-      console.log()
     }
 
     flow.object3D.instanceMatrix.needsUpdate = true;
@@ -111,12 +108,9 @@ class Ribbon {
   animateRibbons() {
     this.ribbonArr.forEach((flow,i) => {
       if (flow) {
-        console.log(flow)
-        // Track each instance position
+      
         for (let i = 0; i < this.ribbonCount; i++) {
           flow.moveIndividualAlongCurve(i,this.ribbonSpeed);
-
-
 
         }
       }
