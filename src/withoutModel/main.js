@@ -35,7 +35,7 @@ function initScene(texture) {
   let height = window.innerHeight;
 
   //Camera setup
-  const frustumSize = 10;
+  const frustumSize = 80;
   const aspect = width / height;
   const camera = new THREE.OrthographicCamera(
     (frustumSize * aspect) / -2,

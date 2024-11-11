@@ -9,8 +9,8 @@ class Ribbon {
     this.frustumSize = frustumSize;
 
     this.originalFrustumSize = frustumSize;
-    this.ribbonSpeed = 0.0005;
-    this.ribbonCount = 6;
+    this.ribbonSpeed = 0.0003;
+    this.ribbonCount = 50;
     this.deltaTime = 0;
     this.progress = 0
     // this.flow = null;
@@ -39,7 +39,7 @@ class Ribbon {
 
     const planeMaterial = new THREE.MeshBasicMaterial({
       map: this.texture,
-      side:THREE.BackSide,
+      side:THREE.FrontSide,
       transparent: true,
     });
 
@@ -78,7 +78,7 @@ class Ribbon {
     const bottomScreen = -this.frustumSize / 2 - this.frustumSize * 0.2;
     const totalPoints = 20;
     const yIncrement = (topScreen - bottomScreen) / (totalPoints - 1);
-    const xOffsets = [-Math.random() * 0.5, Math.random() * 0.5, -Math.random() * 0.5].map(
+    const xOffsets = [-Math.random() * 0.5, Math.random() * 0.5, -Math.random() * 0.5,Math.random() * 0.5,-Math.random() * 0.5].map(
       (offset) => offset * this.frustumSize * this.aspect
     );
 
@@ -90,15 +90,15 @@ class Ribbon {
 
     let isPos = true;
     for (let i = 0; i < totalPoints; i++) {
-      const y = topScreen - i * yIncrement * scaleFactor * 0.9;
-      const z = (i === 0 || i === totalPoints - 1) ? -this.frustumSize * 0.5 : Math.random() < 0.5 ? -this.frustumSize * 0.02 : this.frustumSize * 0.02;
+      const y = topScreen - i * yIncrement * scaleFactor * 1;
+      const z = (i === 0 || i === 1 || i === totalPoints - 1 || i === totalPoints - 2) ? -this.frustumSize * 5 : Math.random() < 0.5 ? -this.frustumSize * 0.035 : this.frustumSize * 0.035;
 
       xOffsets.forEach((x, j) => {
         pointsArray[j].push(
           new THREE.Vector3(
             isPos ? x + this.frustumSize * 0.02 : x - this.frustumSize * 0.02,
             y,
-            z
+            z 
           )
         );
       });
@@ -115,6 +115,9 @@ class Ribbon {
         // Track each instance position
         for (let i = 0; i < this.ribbonCount; i++) {
           flow.moveIndividualAlongCurve(i,this.ribbonSpeed);
+
+
+
         }
       }
     });

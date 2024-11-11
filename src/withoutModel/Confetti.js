@@ -83,7 +83,6 @@ class Confetti {
       this.scene.remove(confetti);
       confetti.geometry.dispose();
       confetti.material.dispose();
-
     });
     this.confettiPapers = [];
   }
