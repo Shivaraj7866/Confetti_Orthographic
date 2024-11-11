@@ -10,7 +10,7 @@ class Ribbon {
 
     this.originalFrustumSize = frustumSize;
     this.ribbonSpeed = 0.0003;
-    this.ribbonCount = 50;
+    this.ribbonCount = 20;
     this.deltaTime = 0;
     this.progress = 0
 
@@ -41,7 +41,7 @@ class Ribbon {
       transparent: true,
     });
 
-    const points = this.generateStaticPoints();
+    const points = this.generateStaticPoints(this.frustumSize);
     const curves = points.map((pnts) => new THREE.CatmullRomCurve3(pnts, false, "centripetal", 0.7));
 
   const flow = new InstancedFlow(
@@ -104,6 +104,34 @@ class Ribbon {
 
     return pointsArray;
   }
+
+  updateResize(newFrustumSize, width, height) {
+    this.aspect = width / height;
+    this.frustumSize = newFrustumSize;
+
+    // Update each ribbon's geometry and curve points
+    this.ribbonArr.forEach((flow) => {
+      if (flow) {
+        const points = this.generateStaticPoints(newFrustumSize);
+        const curves = points.map(
+          (pnts) => new THREE.CatmullRomCurve3(pnts, false, "centripetal", 0.7)
+        );
+
+        // Update curves in the InstancedFlow instance
+        curves.forEach((curve, i) => flow.updateCurve(i, curve));
+        
+        // Adjust ribbon positions along the new curves
+        for (let i = 0; i < this.ribbonCount; i++) {
+          const curveIndex = i % curves.length;
+          flow.setCurve(i, curveIndex);
+          flow.moveIndividualAlongCurve(i, i / this.ribbonCount);
+        }
+
+        flow.object3D.instanceMatrix.needsUpdate = true;
+      }
+    });
+  }
+
 
   animateRibbons() {
     this.ribbonArr.forEach((flow,i) => {

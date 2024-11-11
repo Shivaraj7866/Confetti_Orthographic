@@ -103,15 +103,21 @@ function initScene(texture) {
   window.addEventListener("resize", onWindowResize, true);
   
   function onWindowResize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     const aspect = width / height;
+
     camera.left = (frustumSize * aspect) / -2;
     camera.right = (frustumSize * aspect) / 2;
     camera.top = frustumSize / 2;
     camera.bottom = frustumSize / -2;
     camera.updateProjectionMatrix();
+
     renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.floor(Math.min(window.devicePixelRatio,2)))
+
+    confetti.updateSize(frustumSize,aspect)
+    ribbon.updateResize(frustumSize,width,height)
   }
 
 }

@@ -50,6 +50,32 @@ class Confetti {
     return confetti;
   }
 
+  updateSize(frustumSize, aspect) {
+    this.frustumSize = frustumSize;
+    this.aspect = aspect;
+
+    // Reposition confetti within new frustum size and aspect ratio
+    this.confettiPapers.forEach((confetti) => {
+      for (let i = 0; i < this.confettiCount; i++) {
+        const position = new THREE.Vector3(
+          (Math.random() - 0.5) * this.aspect * this.frustumSize,
+          this.frustumSize / 2,
+          0
+        );
+
+        const matrix = new THREE.Matrix4();
+        confetti.getMatrixAt(i, matrix);
+        matrix.compose(
+          position,
+          new THREE.Quaternion(),
+          new THREE.Vector3(1, 1, 1)
+        );
+        confetti.setMatrixAt(i, matrix);
+      }
+      confetti.instanceMatrix.needsUpdate = true;
+    });
+  }
+
   getRandomSpeed() {
     return {
       xSpeed: (Math.random() - 0.5) * this.frustumSize * this.aspect * 0.002,
