@@ -5,8 +5,9 @@ class Confetti {
     this.scene = scene;
     this.texture = texture;
     this.aspect = width / height;
-    this.confettiCount = 150;
     this.frustumSize = frustumSize;
+    this.confettiCount = 150;
+    this.ribbonRotation = 150
     this.confettiPapers = [this.createConfetti()];
   }
 
@@ -146,8 +147,8 @@ class Confetti {
 
     return new THREE.Quaternion().setFromEuler(
       new THREE.Euler(
-        rotationSpeed + rippleX * 300,
-        rotationSpeed + rippleY * 300,
+        rotationSpeed + rippleX * this.ribbonRotation,
+        rotationSpeed + rippleY * this.ribbonRotation,
         rippleZ
       )
     );

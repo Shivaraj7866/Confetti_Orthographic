@@ -108,7 +108,10 @@ class Ribbon {
   updateResize(newFrustumSize, width, height) {
     this.aspect = width / height;
     this.frustumSize = newFrustumSize;
-
+  
+    // Define a distance factor to space out ribbons
+    const distanceFactor = 0.05; // Adjust this value to control ribbon spacing
+  
     // Update each ribbon's geometry and curve points
     this.ribbonArr.forEach((flow) => {
       if (flow) {
@@ -116,21 +119,27 @@ class Ribbon {
         const curves = points.map(
           (pnts) => new THREE.CatmullRomCurve3(pnts, false, "centripetal", 0.7)
         );
-
+  
         // Update curves in the InstancedFlow instance
         curves.forEach((curve, i) => flow.updateCurve(i, curve));
         
-        // Adjust ribbon positions along the new curves
+        // Adjust ribbon positions along the new curves, ensuring they don't overlap
         for (let i = 0; i < this.ribbonCount; i++) {
           const curveIndex = i % curves.length;
+  
+          // Calculate the adjusted position to avoid overlap
+          const t = (i + distanceFactor * i) / this.ribbonCount;  // Adjust 't' to space out ribbons
+  
+          // Apply adjusted t value to move the ribbon along the curve
           flow.setCurve(i, curveIndex);
-          flow.moveIndividualAlongCurve(i, i / this.ribbonCount);
+          flow.moveIndividualAlongCurve(i, t);
         }
-
+  
         flow.object3D.instanceMatrix.needsUpdate = true;
       }
     });
   }
+  
 
 
   animateRibbons() {
