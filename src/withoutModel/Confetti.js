@@ -11,16 +11,37 @@ class Confetti {
   }
 
   createConfetti() {
-    const geometry = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(0.15, 0.15));
+    const geometry = new THREE.InstancedBufferGeometry().copy(
+      new THREE.PlaneGeometry(0.15, 0.15)
+    );
     const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
-    const confetti = new THREE.InstancedMesh(geometry, material, this.confettiCount);
+    const confetti = new THREE.InstancedMesh(
+      geometry,
+      material,
+      this.confettiCount
+    );
 
     for (let i = 0; i < this.confettiCount; i++) {
-      const position = new THREE.Vector3((Math.random() - 0.5) * this.aspect * this.frustumSize, this.frustumSize / 2, 0);
-      const rotation = new THREE.Euler(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+      const position = new THREE.Vector3(
+        (Math.random() - 0.5) * this.aspect * this.frustumSize,
+        this.frustumSize / 2,
+        0
+      );
+      const rotation = new THREE.Euler(
+        Math.random() * Math.PI,
+        Math.random() * Math.PI,
+        Math.random() * Math.PI
+      );
       const randomColor = new THREE.Color(this.getRandomColor());
 
-      confetti.setMatrixAt(i, new THREE.Matrix4().compose(position, new THREE.Quaternion(), new THREE.Vector3(1, 1, 1)));
+      confetti.setMatrixAt(
+        i,
+        new THREE.Matrix4().compose(
+          position,
+          new THREE.Quaternion(),
+          new THREE.Vector3(1, 1, 1)
+        )
+      );
       confetti.setColorAt(i, randomColor);
       confetti.userData[i] = this.getRandomSpeed();
     }
@@ -57,12 +78,34 @@ class Confetti {
         position.x += xSpeed;
         position.y += ySpeed;
 
-        if (position.y < -this.frustumSize * 0.5) {
-          position.set((Math.random() - 0.5) * this.frustumSize * this.aspect, this.frustumSize * 0.5, 0);
+        // Check if confetti goes beyond the screen boundaries (horizontal or vertical)
+        if (
+          position.y < -this.frustumSize * 0.5 ||
+          position.x < -this.frustumSize * 0.5 * this.aspect ||
+          position.x > this.frustumSize * 0.5 * this.aspect
+        ) {
+          // Reset to a random x position and top of the screen
+          position.set(
+            (Math.random() - 0.5) * this.frustumSize * this.aspect,
+            this.frustumSize * 0.5,
+            0
+          );
         }
 
-        const rippleRotation = this.getRippleRotation(elapsedTime, i, rotationSpeed);
-        matrix.compose(position, rippleRotation, new THREE.Vector3(this.frustumSize * 0.12, this.frustumSize * 0.12, this.frustumSize * 0.12));
+        const rippleRotation = this.getRippleRotation(
+          elapsedTime,
+          i,
+          rotationSpeed
+        );
+        matrix.compose(
+          position,
+          rippleRotation,
+          new THREE.Vector3(
+            this.frustumSize * 0.12,
+            this.frustumSize * 0.12,
+            this.frustumSize * 0.12
+          )
+        );
 
         confetti.setMatrixAt(i, matrix);
         confetti.instanceMatrix.needsUpdate = true;
@@ -75,7 +118,13 @@ class Confetti {
     const rippleY = Math.cos(elapsedTime * 2 + i * 0.8) * 0.1;
     const rippleZ = Math.cos(elapsedTime * 1.5 + i * 0.3) * 0.5;
 
-    return new THREE.Quaternion().setFromEuler(new THREE.Euler(rotationSpeed + rippleX * 300, rotationSpeed + rippleY * 300, rippleZ));
+    return new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(
+        rotationSpeed + rippleX * 300,
+        rotationSpeed + rippleY * 300,
+        rippleZ
+      )
+    );
   }
 
   dispose() {
