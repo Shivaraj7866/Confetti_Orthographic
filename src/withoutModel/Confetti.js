@@ -6,15 +6,14 @@ class Confetti {
     this.texture = texture;
     this.aspect = width / height;
     this.frustumSize = frustumSize;
+
     this.confettiCount = 150;
     this.ribbonRotation = 150
     this.confettiPapers = [this.createConfetti()];
   }
 
   createConfetti() {
-    const geometry = new THREE.InstancedBufferGeometry().copy(
-      new THREE.PlaneGeometry(0.15, 0.15)
-    );
+    const geometry = new THREE.InstancedBufferGeometry().copy(new THREE.PlaneGeometry(0.15, 0.15));
     const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
     const confetti = new THREE.InstancedMesh(
       geometry,
